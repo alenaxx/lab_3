@@ -1,0 +1,197 @@
+
+<!doctype html>
+<html><head></head><body>
+
+<div class="row center bg-primary">
+    <h1>CONTENT GENERATOR</h1>
+</div>
+
+<script src="jquery-3.3.1.min.js"></script>
+<script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
+
+<div class="Main">
+ <!--   <canvas height="400" width="600" id="MyCanvas">
+        <img id="canvasImg">
+    </canvas>-->
+    <div class="Buttons">
+        <button id="get" onclick="ClickGet()">Get</button>
+        <button id="save" onclick="ClickSave()">Save</button>
+    </div>
+
+</div>
+
+<script>
+    var canvas = document.createElement('canvas');
+    canvas.id = "example";
+    canvas.width = 600;
+    canvas.height = 400;
+    var body = document.getElementsByTagName("body")[0];
+    body.appendChild(canvas);
+
+    function wrapText(context, text, marginLeft, marginTop, maxWidth, lineHeight)
+    {
+        var words = text.split(" ");
+        var countWords = words.length;
+        var line = "";
+        for (var n = 0; n < countWords; n++) {
+            var testLine = line + words[n] + " ";
+            var testWidth = context.measureText(testLine).width;
+            if (testWidth > maxWidth) {
+                context.fillText(line, marginLeft, marginTop);
+                context.strokeText(line, marginLeft, marginTop);
+                line = words[n] + " ";
+                marginTop += lineHeight;
+            }
+            else {
+                line = testLine;
+            }
+        }
+        /* "Сначала мы разбиваем текст на слова по пробелам, а потом обходим эти слова в цикле, " +
+            "объединяя их по одному в строку. Если при последнем объединении ширина этой строки меньше максимальной, " +
+            "то продолжаем, а если больше, то выводим строку без последнего слова, а его записываем в новую строку." +
+            "И так продолжаем, пока не обработаем весь текст."*/
+
+        context.fillText(line, marginLeft, marginTop);
+        context.strokeText(line, marginLeft, marginTop);
+    }
+
+       canvas = document.getElementById("example"),
+        ctx  = canvas.getContext('2d'),
+           pic = new Image();
+    pic.crossOrigin ='anonymous';
+    pic2 = new Image();
+    pic2.crossOrigin ='anonymous';
+    pic3 = new Image();
+    pic3.crossOrigin ='anonymous';
+    pic4 = new Image();
+    pic4.crossOrigin ='anonymous';
+    pic.src = 'https://picsum.photos/301/203?image='+ Math.floor(Math.random() * (200));
+    pic.onload = function() {
+        pic2.src = 'https://picsum.photos/300/201/?random'+ Math.floor(Math.random() * (200));
+        pic2.onload = function () {
+            pic3.src = 'https://picsum.photos/301/201/?random'+ Math.floor(Math.random() * (200));
+            pic3.onload = function () {
+                pic4.src = 'https://picsum.photos/302/200/?random'+ Math.floor(Math.random() * (200));
+                pic4.onload = function () {
+                    ctx.drawImage(pic2, 0, 0);
+                    ctx.drawImage(pic, 300, 0);
+                    ctx.drawImage(pic3, 0, 200);
+                    ctx.drawImage(pic4, 300, 200);
+                    ctx.textAlign = "center";
+                    ctx.font = "bold 30px  Calibri";
+                    ctx.shadowBlur = 25;
+                    ctx.shadowColor = 'white';
+                    getNewQuote();
+                }
+            }
+        }
+    }
+    function ClickGet(){
+        var link = document.getElementById("example");
+        link.setAttribute("href", "#");
+        link.innerHTML = "";
+        ctx.clearRect(0,0,600,400);
+        pic.src = 'https://picsum.photos/301/203?image='+ Math.floor(Math.random() * (200));
+        pic.onload = function() {
+            pic2.src = 'https://picsum.photos/300/201/?random'+ Math.floor(Math.random() * (200));
+            pic2.onload = function () {
+                pic3.src = 'https://picsum.photos/301/201/?random'+ Math.floor(Math.random() * (200));
+                pic3.onload = function () {
+                    pic4.src = 'https://picsum.photos/302/200/?random'+ Math.floor(Math.random() * (200));
+                    pic4.onload = function () {
+                        ctx.drawImage(pic2, 0, 0);
+                        ctx.drawImage(pic, 300, 0);
+                        ctx.drawImage(pic3, 0, 200);
+                        ctx.drawImage(pic4, 300, 200);
+                        ctx.textAlign = "center";
+                        ctx.font = "bold 30px  Calibri";
+                      ctx.shadowBlur = 25;
+                        ctx.shadowColor = 'white';
+                        getNewQuote();
+                    }
+                }
+            }
+        }
+    }
+
+    function ClickSave() {
+        var link = document.createElement('a');
+        link.download = 'https://picsum.photos/600/400?image.jpg';
+        link.href = document.getElementById('example').toDataURL();
+        link.click();
+    }
+
+    function getNewQuote()
+    {
+        $.ajax({
+            url: 'https://api.forismatic.com/api/1.0/?method=getQuote&format=jsonp&lang=en',
+            jsonp: 'jsonp',
+            dataType: 'jsonp',
+            success: function(response){
+                quote = response.quoteText;
+                wrapText(ctx, quote,300,150,300,40);
+            }
+        })
+    }
+    /*  var b1 = document.createElement('button');
+     var textInBtn = document.createTextNode('Save');
+     b1.appendChild(textInBtn);
+     b1.onclick = ClickSave;
+
+    var b2 = document.createElement('button');
+      var textInBtn = document.createTextNode('Get');
+     b2.appendChild(textInBtn);
+     b2.onclick = ClickGet;*/
+
+
+</script>
+
+
+<title>CONTENT GENERATOR</title>
+<meta charset="utf-8">
+<style type="text/css">
+    body{
+        text-align: center;
+    }
+    Main{
+        width: 100%;
+        text-align: center;
+        background-color: black;
+    }
+    canvas{
+        margin: auto;
+        display: block;
+    }
+    .Buttons{
+        margin: auto;
+        margin-top: 40px;
+        display: block;
+        text-align: center;
+        width: 300px;
+        height: 40px;
+    }
+    button{
+        margin: auto;
+        display: inline-block;
+        width: 100px;
+        height: 30px;
+    }
+    button#save{
+        margin-left: 30px;
+    }
+    @media (max-width: 750px)
+    {
+        canvas{
+            width: 95%;
+        }
+        body{
+            min-width: 350px;
+        }
+    }
+</style>
+
+
+
+
+
+</body></html>
